@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lucky Game</title>
+<style>
+body{background:#0f172a;color:white;text-align:center;font-family:Arial;padding:20px}
+.card{background:#1e293b;padding:20px;border-radius:15px;max-width:350px;margin:auto}
+button{padding:12px 20px;margin:5px;border:none;border-radius:10px;font-size:18px;background:#22c55e;color:white}
+input{padding:10px;width:80%;border-radius:8px}
+</style>
+</head>
+<body>
+<h1>🎮 Lucky Coin Game</h1>
+<div class="card">
+<p>Coins: <span id="coins">1000</span></p>
+<input id="bet" type="number" value="100">
+<br><br>
+<button onclick="play()">PLAY</button>
+<p id="result"></p>
+</div>
+<script>
+const API="https://YOUR-BACKEND-URL.onrender.com";
+let tgId = window.Telegram?.WebApp?.initDataUnsafe?.user?.id || "12345";
+let username = window.Telegram?.WebApp?.initDataUnsafe?.user?.username || "test";
+async function init(){
+ let r=await fetch(API+"/api/user",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({telegramId:tgId,username})});
+ let d=await r.json();
+ document.getElementById("coins").innerText=d.user.coins;
+}
+async function play(){
+ let bet=parseInt(document.getElementById("bet").value);
+ let r=await fetch(API+"/api/play",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({telegramId:tgId,bet})});
+ let d=await r.json();
+ document.getElementById("coins").innerText=d.coins;
+ document.getElementById("result").innerText=d.win?"✅ YOU WIN!":"❌ YOU LOSE";
+}
+init();
+</script>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+</body>
+</html>
