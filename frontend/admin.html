@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Admin Panel</title>
+<style>
+body{background:#0f172a;color:white;font-family:Arial;padding:20px;text-align:center}
+.card{background:#1e293b;padding:20px;border-radius:15px;max-width:400px;margin:auto}
+input{padding:10px;width:80%;margin:5px;border-radius:8px}
+button{padding:12px 20px;background:#3b82f6;color:white;border:none;border-radius:10px;margin-top:10px}
+</style>
+</head>
+<body>
+<h1>🔐 Admin Panel</h1>
+<div class="card">
+<p>Password: <input id="pass" type="password" value="Raja123"></p>
+<p>Global Win Rate %: <input id="winRate" type="number" value="30"></p>
+<button onclick="save()">SAVE</button>
+<p id="msg"></p>
+</div>
+<script>
+const API="https://YOUR-BACKEND-URL.onrender.com";
+async function load(){
+ let r=await fetch(API+"/api/admin/settings");
+ let d=await r.json();
+ document.getElementById("winRate").value=d.globalWinRate;
+}
+async function save(){
+ let globalWinRate=document.getElementById("winRate").value;
+ let password=document.getElementById("pass").value;
+ let r=await fetch(API+"/api/admin/settings",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({globalWinRate,password})});
+ let d=await r.json();
+ document.getElementById("msg").innerText=d.success?"Saved ✅":d.error;
+}
+load();
+</script>
+</body>
+</html>
